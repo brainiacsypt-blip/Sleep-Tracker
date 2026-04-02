@@ -1,0 +1,161 @@
+===============================================
+EMAILJS QUICK START GUIDE
+===============================================
+
+WHAT IT DOES:
+- Sends email when timer STARTS
+- Sends email when timer ENDS
+- Automatically to: Vishal165610@gmail.com
+- Completely automatic, no user input needed
+
+===============================================
+5 MINUTE SETUP
+===============================================
+
+STEP 1: Go to https://www.emailjs.com
+        Sign up free (takes 1 minute)
+
+STEP 2: Copy your User ID from Dashboard
+        (top left corner)
+
+STEP 3: Create Gmail service
+        - Go to Email Services
+        - Click "Create New Service"
+        - Select Gmail
+        - Connect Vishal165610@gmail.com
+        - Copy Service ID
+
+STEP 4: Create 2 Email Templates
+        - Template 1: Sleep Start
+        - Template 2: Sleep End
+        (Use HTML provided in EMAILJS_SETUP_COMPLETE.md)
+
+STEP 5: Update emailjs-config.js
+        Replace these 4 values:
+        - USER_ID
+        - SERVICE_ID
+        - TEMPLATE_START_ID
+        - TEMPLATE_END_ID
+
+DONE! 🎉
+
+===============================================
+TEST IT
+===============================================
+
+1. Open app in browser
+2. Login
+3. Go to Dashboard
+4. Enter "8" hours
+5. Click "Start Sleep"
+6. Check email - alert received!
+7. Wait 10 seconds
+8. Click "Stop Sleep"
+9. Check email - summary received!
+
+===============================================
+FILE REFERENCE
+===============================================
+
+emailjs-config.js
+  - Main email service file
+  - Contains all configuration
+  - Update with your EmailJS credentials
+
+EMAILJS_SETUP_COMPLETE.md
+  - Complete setup guide
+  - Email template HTML
+  - Troubleshooting
+
+dashboard.html
+  - Calls sendSleepStartEmail on start
+  - Calls sendSleepEndEmail on stop
+
+===============================================
+CONFIGURATION VALUES
+===============================================
+
+Find in emailjs-config.js line 10-15:
+
+USER_ID = found in EmailJS Dashboard top-left
+SERVICE_ID = found in Email Services after creating Gmail
+TEMPLATE_START_ID = found in Email Templates after creating
+TEMPLATE_END_ID = found in Email Templates after creating
+TO_EMAIL = Vishal165610@gmail.com (already set)
+
+===============================================
+EMAIL CONTENT
+===============================================
+
+SLEEP START EMAIL:
+- Shows start time
+- Shows date
+- Shows that timer is running
+- No user action needed
+
+SLEEP END EMAIL:
+- Shows start and end time
+- Shows total sleep duration
+- Shows health status
+- Shows recommendations
+
+===============================================
+OFFLINE SUPPORT
+===============================================
+
+If offline:
+- App continues to work
+- Emails are queued locally
+- When back online, emails auto-send
+- All data preserved
+
+===============================================
+FREE TIER
+===============================================
+
+EmailJS free account includes:
+- 200 emails/month
+- That's about 7 per day
+- More than enough for sleep tracking!
+- No credit card needed
+
+===============================================
+QUICK TROUBLESHOOTING
+===============================================
+
+Emails not sending?
+1. Check User ID in emailjs-config.js
+2. Check Service ID in emailjs-config.js
+3. Check Template IDs in emailjs-config.js
+4. Check email in browser console (F12)
+5. Check EmailJS activity log
+
+Still not working?
+- Verify Gmail password generated correctly
+- Check that Vishal165610@gmail.com is connected
+- Read EMAILJS_SETUP_COMPLETE.md for details
+
+===============================================
+VARIABLES IN EMAILS
+===============================================
+
+{{user_name}} = User's name
+{{sleep_start_time}} = When sleep started
+{{sleep_end_time}} = When sleep ended
+{{sleep_duration}} = Total hours slept
+{{sleep_date}} = Date
+{{health_status}} = Excellent/Good/Fair/Poor
+{{to_name}} = "Admin" (can customize)
+
+===============================================
+SUPPORT
+===============================================
+
+EmailJS Help: https://www.emailjs.com/help
+GitHub: https://github.com/emailjs-com/emailjs-sdk
+
+Need custom emails? Edit emailjs-config.js
+
+Ready to go! 🚀
+
+Update emailjs-config.js with your credentials and enjoy!

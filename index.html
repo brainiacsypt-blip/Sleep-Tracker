@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sweet Dreams - Sleep Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: linear-gradient(135deg, #1a1a1a 0%, #242424 100%);
+            border-radius: 30px;
+            border: 2px solid #fbbf24;
+            box-shadow: 0 20px 60px rgba(251, 191, 36, 0.2);
+            width: 100%;
+            max-width: 450px;
+            padding: 50px 40px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            color: #fbbf24;
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+        }
+
+        .subtitle {
+            color: #999;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #ddd;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #333;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            background: #0f0f0f;
+            color: #fff;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #fbbf24;
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #0f0f0f;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(251, 191, 36, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .toggle-form {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #999;
+        }
+
+        .toggle-form a {
+            color: #fbbf24;
+            text-decoration: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .toggle-form a:hover {
+            text-decoration: underline;
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .error {
+            color: #ff6b6b;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #fbbf24;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid rgba(251, 191, 36, 0.1);
+            border-top: 3px solid #fbbf24;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">😴</div>
+            <h1>Sweet Dreams</h1>
+            <p class="subtitle">Track Your Sleep, Care for Your Health</p>
+        </div>
+
+        <!-- Login Form -->
+        <div class="form-container active" id="loginForm">
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required placeholder="your@email.com">
+                    <div class="error" id="loginEmailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••">
+                    <div class="error" id="loginPasswordError"></div>
+                </div>
+
+                <div class="loading" id="loginLoading">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 10px; font-size: 12px;">Logging in...</p>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="loginBtn">Login</button>
+            </form>
+
+            <div class="toggle-form">
+                Don't have an account? <a onclick="toggleForms()">Sign up here</a>
+            </div>
+        </div>
+
+        <!-- Signup Form -->
+        <div class="form-container" id="signupForm">
+            <form onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" required placeholder="Your name">
+                    <div class="error" id="signupNameError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" required placeholder="your@email.com">
+                    <div class="error" id="signupEmailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" required placeholder="••••••••" minlength="6">
+                    <div class="error" id="signupPasswordError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupConfirm">Confirm Password</label>
+                    <input type="password" id="signupConfirm" required placeholder="••••••••">
+                    <div class="error" id="signupConfirmError"></div>
+                </div>
+
+                <div class="loading" id="signupLoading">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 10px; font-size: 12px;">Creating account...</p>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="signupBtn">Create Account</button>
+            </form>
+
+            <div class="toggle-form">
+                Already have an account? <a onclick="toggleForms()">Login here</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Firebase (placeholder - update with your config)
+        const firebaseConfig = {
+  apiKey: "AIzaSyCveCdfP4pvXTFsFSwL3YQBEONIPvsEGSE",
+  authDomain: "sleep-tracker-d61bc.firebaseapp.com",
+  databaseURL: "https://sleep-tracker-d61bc-default-rtdb.firebaseio.com",
+  projectId: "sleep-tracker-d61bc",
+  storageBucket: "sleep-tracker-d61bc.firebasestorage.app",
+  messagingSenderId: "782814507849",
+  appId: "1:782814507849:web:e142159e1c7a4f7f5b2098"
+};
+
+        let currentUser = null;
+
+        function toggleForms() {
+            document.getElementById('loginForm').classList.toggle('active');
+            document.getElementById('signupForm').classList.toggle('active');
+            clearErrors();
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.error').forEach(el => {
+                el.classList.remove('show');
+                el.textContent = '';
+            });
+        }
+
+        function showError(elementId, message) {
+            const errorEl = document.getElementById(elementId);
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            clearErrors();
+
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const loading = document.getElementById('loginLoading');
+            const btn = document.getElementById('loginBtn');
+
+            // Validate inputs
+            if (!email || !password) {
+                showError('loginEmailError', 'Please fill in all fields');
+                return;
+            }
+
+            loading.classList.add('show');
+            btn.disabled = true;
+
+            // Simulate Firebase login
+            setTimeout(() => {
+                try {
+                    const storedUser = JSON.parse(localStorage.getItem(email));
+                    
+                    if (storedUser && storedUser.password === password) {
+                        currentUser = {
+                            uid: storedUser.uid,
+                            email: email,
+                            name: storedUser.name
+                        };
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        showError('loginPasswordError', 'Invalid email or password');
+                        loading.classList.remove('show');
+                        btn.disabled = false;
+                    }
+                } catch (error) {
+                    showError('loginPasswordError', 'Login failed. Please try again.');
+                    loading.classList.remove('show');
+                    btn.disabled = false;
+                }
+            }, 1500);
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            clearErrors();
+
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirm = document.getElementById('signupConfirm').value;
+            const loading = document.getElementById('signupLoading');
+            const btn = document.getElementById('signupBtn');
+
+            // Validate inputs
+            if (!name || !email || !password || !confirm) {
+                showError('signupNameError', 'Please fill in all fields');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('signupPasswordError', 'Password must be at least 6 characters');
+                return;
+            }
+
+            if (password !== confirm) {
+                showError('signupConfirmError', 'Passwords do not match');
+                return;
+            }
+
+            // Check if email already exists
+            if (localStorage.getItem(email)) {
+                showError('signupEmailError', 'Email already registered');
+                return;
+            }
+
+            loading.classList.add('show');
+            btn.disabled = true;
+
+            // Simulate Firebase signup
+            setTimeout(() => {
+                try {
+                    const uid = 'user_' + Date.now();
+                    const user = {
+                        uid: uid,
+                        name: name,
+                        email: email,
+                        password: password,
+                        createdAt: new Date().toISOString()
+                    };
+
+                    localStorage.setItem(email, JSON.stringify(user));
+
+                    currentUser = {
+                        uid: uid,
+                        email: email,
+                        name: name
+                    };
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    
+                    // Initialize user data
+                    localStorage.setItem('sleepRecords_' + uid, JSON.stringify([]));
+                    
+                    window.location.href = 'dashboard.html';
+                } catch (error) {
+                    showError('signupNameError', 'Signup failed. Please try again.');
+                    loading.classList.remove('show');
+                    btn.disabled = false;
+                }
+            }, 1500);
+        }
+
+        // Check if user is already logged in
+        window.addEventListener('load', function() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+    </script>
+</body>
+</html>
